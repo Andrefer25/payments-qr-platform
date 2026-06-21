@@ -5,11 +5,7 @@ import { PaymentsModule } from "./modules/payments/payments.module.js";
 import { RealtimeModule } from "./modules/realtime/realtime.module.js";
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    PaymentsModule,
-    RealtimeModule
-  ],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PaymentsModule, RealtimeModule],
   controllers: [HealthController]
 })
 export class AppModule {}

@@ -46,7 +46,9 @@ export function App() {
             <History size={18} />
             <h2>Historial</h2>
           </div>
-          <p className="muted">Listado paginado por cursor, filtros por estado, fecha y referencia.</p>
+          <p className="muted">
+            Listado paginado por cursor, filtros por estado, fecha y referencia.
+          </p>
         </section>
       </section>
     </main>

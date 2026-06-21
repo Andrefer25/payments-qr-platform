@@ -8,6 +8,8 @@
     "build": "nest build",
     "start": "node dist/main.js",
     "lint": "eslint \"src/**/*.ts\"",
+    "format": "prettier \"src/**/*.ts\" \"scripts/**/*.ts\" \"*.json\" --write",
+    "format:check": "prettier \"src/**/*.ts\" \"scripts/**/*.ts\" \"*.json\" --check",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest --passWithNoTests",
     "infra:init": "tsx scripts/init-local-infra.ts"
@@ -28,13 +30,17 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.16.0",
     "@nestjs/cli": "^11.0.23",
     "@nestjs/testing": "^11.1.27",
     "@types/node": "22.19.0",
     "@types/uuid": "^10.0.0",
     "eslint": "^9.16.0",
+    "globals": "^15.14.0",
     "jest": "^30.4.2",
+    "prettier": "^3.4.2",
     "tsx": "^4.19.2",
+    "typescript-eslint": "^8.18.0",
     "typescript": "^5.6.3"
   },
   "overrides": {

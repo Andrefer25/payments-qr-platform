@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "build": "npm --prefix apps/backend run build && npm --prefix apps/frontend run build",
+    "lint": "npm --prefix apps/backend run lint && npm --prefix apps/frontend run lint",
+    "format": "npm --prefix apps/backend run format && npm --prefix apps/frontend run format",
+    "format:check": "npm --prefix apps/backend run format:check && npm --prefix apps/frontend run format:check",
     "typecheck": "npm --prefix apps/backend run typecheck && npm --prefix apps/frontend run typecheck",
     "test": "npm --prefix apps/backend test && npm --prefix apps/frontend test",
     "audit": "npm --prefix apps/backend audit && npm --prefix apps/frontend audit",
