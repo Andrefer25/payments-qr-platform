@@ -1,0 +1,57 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    command: pnpm --filter @payments-qr/frontend dev
+    environment:
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/workspace
+      - frontend_node_modules:/workspace/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    command: pnpm --filter @payments-qr/backend dev
+    env_file:
+      - apps/backend/.env.example
+    environment:
+      DYNAMODB_ENDPOINT: http://dynamodb-local:8000
+      LOCALSTACK_ENDPOINT: http://localstack:4566
+      FRONTEND_ORIGIN: http://localhost:5173
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/workspace
+      - backend_node_modules:/workspace/node_modules
+    depends_on:
+      - dynamodb-local
+      - localstack
+
+  dynamodb-local:
+    image: amazon/dynamodb-local:2.5.2
+    command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
+    ports:
+      - "8000:8000"
+
+  localstack:
+    image: localstack/localstack:4.0.3
+    environment:
+      SERVICES: sqs,sns,events
+      AWS_DEFAULT_REGION: us-east-1
+      EDGE_PORT: 4566
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+
+volumes:
+  frontend_node_modules:
+  backend_node_modules:
+  localstack_data:
