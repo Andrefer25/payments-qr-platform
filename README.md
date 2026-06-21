@@ -30,6 +30,14 @@ payments-qr-platform/
 
 ## Comandos
 
+Antes de levantar el proyecto por primera vez, crear los `.env` locales desde
+las plantillas:
+
+```bash
+cp apps/backend/.env.example apps/backend/.env
+cp apps/frontend/.env.example apps/frontend/.env
+```
+
 Cada app administra sus propias dependencias:
 
 ```bash
