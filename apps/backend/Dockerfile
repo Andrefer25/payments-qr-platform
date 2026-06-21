@@ -1,15 +1,22 @@
-FROM node:22-alpine
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
 
-WORKDIR /workspace
-
-RUN corepack enable
-
-COPY package.json pnpm-workspace.yaml tsconfig.base.json ./
-COPY packages/shared/package.json packages/shared/package.json
-COPY apps/backend/package.json apps/backend/package.json
-
-RUN pnpm install --frozen-lockfile=false
-
+FROM deps AS dev
 COPY . .
-
 EXPOSE 3000
+CMD ["npm", "run", "dev"]
+
+FROM deps AS build
+COPY . .
+RUN npm run build
+
+FROM node:22-alpine AS prod
+WORKDIR /app
+ENV NODE_ENV=production
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY --from=build /app/dist ./dist
+EXPOSE 3000
+CMD ["npm", "start"]

@@ -2,31 +2,14 @@
   "name": "payments-qr-platform",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "dev": "pnpm --parallel --filter @payments-qr/* dev",
-    "build": "pnpm --recursive build",
-    "lint": "pnpm --recursive lint",
-    "typecheck": "pnpm --recursive typecheck",
-    "test": "pnpm --recursive test",
-    "infra:init": "pnpm --filter @payments-qr/backend infra:init"
-  },
-  "devDependencies": {
-    "typescript": "^5.6.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "@nestjs/core": "^11.1.27",
-      "@types/node": "22.19.0",
-      "glob": "^10.5.0",
-      "js-yaml": "^4.2.0",
-      "lodash": "^4.17.24",
-      "multer": "^2.2.0",
-      "nanoid": "3.3.13",
-      "path-expression-matcher": "1.5.0",
-      "picomatch": "^4.0.4",
-      "qs": "^6.15.2",
-      "tmp": "^0.2.6"
-    }
+    "build": "npm --prefix apps/backend run build && npm --prefix apps/frontend run build",
+    "typecheck": "npm --prefix apps/backend run typecheck && npm --prefix apps/frontend run typecheck",
+    "test": "npm --prefix apps/backend test && npm --prefix apps/frontend test",
+    "audit": "npm --prefix apps/backend audit && npm --prefix apps/frontend audit",
+    "infra:init": "npm --prefix apps/backend run infra:init",
+    "compose:up": "docker compose up --build",
+    "compose:dev": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
+    "compose:down": "docker compose down"
   }
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from "@nestjs/common";
-import type { CreatePaymentRequest, CreatePaymentResponse } from "@payments-qr/shared";
 import { randomUUID } from "node:crypto";
+import type { CreatePaymentRequest, CreatePaymentResponse } from "./payment.types.js";
 import { PaymentsRepository } from "./payments.repository.js";
 
 @Injectable()

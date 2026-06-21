@@ -13,11 +13,10 @@ El diseño funcional y tecnico de referencia esta en:
 ```text
 payments-qr-platform/
   apps/
-    frontend/       React + Vite
-    backend/        NestJS API, SSE y workers
-  packages/
-    shared/         Tipos y contratos compartidos
+    frontend/       React + Vite, npm y Docker propio
+    backend/        NestJS API, SSE, npm y Docker propio
   docker-compose.yml
+  docker-compose.dev.yml
 ```
 
 ## Servicios locales
@@ -31,21 +30,36 @@ payments-qr-platform/
 
 ## Comandos
 
+Cada app administra sus propias dependencias:
+
 ```bash
-pnpm install
-pnpm dev
+cd apps/backend
+npm install
+npm run dev
 ```
 
-Con Docker:
+```bash
+cd apps/frontend
+npm install
+npm run dev
+```
+
+Con Docker en modo produccion:
 
 ```bash
 docker compose up --build
 ```
 
+Con Docker en modo desarrollo:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
 Inicializacion de infraestructura local:
 
 ```bash
-pnpm infra:init
+npm run infra:init
 ```
 
 Hoy el script `infra:init` deja un placeholder. El siguiente paso es crear las

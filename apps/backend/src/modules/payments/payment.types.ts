@@ -45,21 +45,3 @@ export interface CreatePaymentResponse {
   expiresAt: string;
   correlationId: string;
 }
-
-export interface PaymentEventEnvelope<TPayload = unknown> {
-  eventId: string;
-  eventType:
-    | "PaymentCreated"
-    | "PaymentProcessingStarted"
-    | "PaymentApproved"
-    | "PaymentRejected"
-    | "PaymentExpired"
-    | "PaymentCancelled"
-    | "PaymentNotificationFailed"
-    | "PaymentReconciliationFailed";
-  eventVersion: "1.0";
-  occurredAt: string;
-  correlationId: string;
-  producer: string;
-  payload: TPayload;
-}

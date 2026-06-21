@@ -1,24 +1,17 @@
 services:
   frontend:
     build:
-      context: .
-      dockerfile: apps/frontend/Dockerfile
-    command: pnpm --filter @payments-qr/frontend dev
-    environment:
-      VITE_API_URL: http://localhost:3000
+      context: ./apps/frontend
+      target: prod
     ports:
-      - "5173:5173"
-    volumes:
-      - .:/workspace
-      - frontend_node_modules:/workspace/node_modules
+      - "5173:80"
     depends_on:
       - backend
 
   backend:
     build:
-      context: .
-      dockerfile: apps/backend/Dockerfile
-    command: pnpm --filter @payments-qr/backend dev
+      context: ./apps/backend
+      target: prod
     env_file:
       - apps/backend/.env.example
     environment:
@@ -27,9 +20,6 @@ services:
       FRONTEND_ORIGIN: http://localhost:5173
     ports:
       - "3000:3000"
-    volumes:
-      - .:/workspace
-      - backend_node_modules:/workspace/node_modules
     depends_on:
       - dynamodb-local
       - localstack
@@ -45,13 +35,11 @@ services:
     environment:
       SERVICES: sqs,sns,events
       AWS_DEFAULT_REGION: us-east-1
-      EDGE_PORT: 4566
+      GATEWAY_LISTEN: 0.0.0.0:4566
     ports:
       - "4566:4566"
     volumes:
       - localstack_data:/var/lib/localstack
 
 volumes:
-  frontend_node_modules:
-  backend_node_modules:
   localstack_data:

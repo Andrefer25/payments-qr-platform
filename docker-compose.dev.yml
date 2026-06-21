@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build:
+      target: dev
+    command: npm run dev -- --port 80
+    volumes:
+      - ./apps/frontend/src:/app/src
+      - ./apps/frontend/index.html:/app/index.html
+      - ./apps/frontend/vite.config.ts:/app/vite.config.ts
+
+  backend:
+    build:
+      target: dev
+    volumes:
+      - ./apps/backend/src:/app/src
+      - ./apps/backend/scripts:/app/scripts

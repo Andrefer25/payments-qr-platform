@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { Payment, PaymentStatus } from "@payments-qr/shared";
+import type { Payment, PaymentStatus } from "./payment.types.js";
 
 @Injectable()
 export class PaymentsRepository {
