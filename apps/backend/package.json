@@ -8,11 +8,12 @@
     "build": "nest build",
     "start": "node dist/main.js",
     "lint": "eslint \"src/**/*.ts\"",
-    "format": "prettier \"src/**/*.ts\" \"scripts/**/*.ts\" \"*.json\" --write",
-    "format:check": "prettier \"src/**/*.ts\" \"scripts/**/*.ts\" \"*.json\" --check",
+    "format": "prettier \"src/**/*.ts\" \"*.json\" --write",
+    "format:check": "prettier \"src/**/*.ts\" \"*.json\" --check",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest --passWithNoTests",
-    "infra:init": "tsx scripts/init-local-infra.ts"
+    "infra:init": "node dist/scripts/init-local-infra.js",
+    "infra:init:dev": "tsx src/scripts/init-local-infra.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.705.0",

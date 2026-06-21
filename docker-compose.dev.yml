@@ -13,4 +13,3 @@ services:
       target: dev
     volumes:
       - ./apps/backend/src:/app/src
-      - ./apps/backend/scripts:/app/scripts
