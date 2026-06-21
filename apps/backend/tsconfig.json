@@ -5,8 +5,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "rootDir": "."
+    "experimentalDecorators": true
   },
   "include": ["src/**/*.ts", "scripts/**/*.ts"]
 }
