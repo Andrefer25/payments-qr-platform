@@ -4,8 +4,8 @@ import {
   Injectable,
   NotFoundException
 } from "@nestjs/common";
-import { randomUUID } from "node:crypto";
-import type { CreatePaymentRequest, CreatePaymentResponse } from "./payment.types.js";
+import { createHash, randomUUID } from "node:crypto";
+import type { CreatePaymentRequest, CreatePaymentResponse, Payment } from "./payment.types.js";
 import { PaymentsRepository } from "./payments.repository.js";
 
 @Injectable()
@@ -24,12 +24,29 @@ export class PaymentsService {
       });
     }
 
+    const requestHash = hashRequest(args.input);
+    const existing = await this.paymentsRepository.findIdempotencyRecord({
+      merchantId: args.merchantId,
+      idempotencyKey: args.idempotencyKey
+    });
+
+    if (existing) {
+      if (existing.requestHash !== requestHash) {
+        throw new ConflictException({
+          code: "IDEMPOTENCY_KEY_REUSED",
+          message: "Idempotency-Key was already used with a different payload"
+        });
+      }
+
+      return existing.responseSnapshot as CreatePaymentResponse;
+    }
+
     const now = new Date();
     const expiresAt = new Date(now.getTime() + 10 * 60 * 1000);
     const paymentId = `pay_${randomUUID().slice(0, 8)}`;
     const correlationId = `corr_${randomUUID().slice(0, 8)}`;
 
-    const payment = await this.paymentsRepository.put({
+    const payment: Payment = {
       paymentId,
       merchantId: args.merchantId,
       amount: args.input.amount,
@@ -42,9 +59,9 @@ export class PaymentsService {
       updatedAt: now.toISOString(),
       expiresAt: expiresAt.toISOString(),
       correlationId
-    });
+    };
 
-    return {
+    const response: CreatePaymentResponse = {
       paymentId: payment.paymentId,
       status: "PENDING",
       amount: payment.amount,
@@ -54,6 +71,16 @@ export class PaymentsService {
       expiresAt: payment.expiresAt,
       correlationId: payment.correlationId
     };
+
+    await this.paymentsRepository.createWithIdempotency({
+      payment,
+      idempotencyKey: args.idempotencyKey,
+      requestHash,
+      responseSnapshot: response,
+      ttl: Math.floor(now.getTime() / 1000) + 24 * 60 * 60
+    });
+
+    return response;
   }
 
   list(filters: { merchantId: string; status?: string }) {
@@ -84,4 +111,24 @@ export class PaymentsService {
     await this.paymentsRepository.updateStatus(args.paymentId, "PROCESSING");
     return this.paymentsRepository.updateStatus(args.paymentId, "APPROVED");
   }
+}
+
+function hashRequest(input: CreatePaymentRequest) {
+  return createHash("sha256").update(stableStringify(input)).digest("hex");
+}
+
+function stableStringify(value: unknown): string {
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => stableStringify(item)).join(",")}]`;
+  }
+
+  if (value && typeof value === "object") {
+    return `{${Object.entries(value)
+      .filter(([, entryValue]) => entryValue !== undefined)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, entryValue]) => `${JSON.stringify(key)}:${stableStringify(entryValue)}`)
+      .join(",")}}`;
+  }
+
+  return JSON.stringify(value);
 }
